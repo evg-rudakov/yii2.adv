@@ -31,7 +31,7 @@ RUN apt-get install -y \
 
 #после завершения установок всех пакетов - обновим индекс
 RUN apt-get update
-RUN apt-get install -y composer supervisor
+RUN apt-get install -y composer
 
 #откроем 80 порт
 EXPOSE 80
