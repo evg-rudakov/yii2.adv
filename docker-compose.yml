@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  webserver:
+    container_name: webserver_advanced
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal
+      PHP_IDE_CONFIG: serverName=localhost
+    ports:
+    - 82:80
+    volumes:
+    - ./:/var/www
+    links:
+    - db
+
+    depends_on:
+    - db
+
+  db:
+    container_name: mysql_advanced
+    image: 'mysql:latest'
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+    - 9514:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: yii2advanced
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqluser
+    volumes:
+    - ./docker/database:/var/lib/mysql
