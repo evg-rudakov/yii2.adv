@@ -36,6 +36,8 @@ RUN apt-get install -y composer
 #откроем 80 порт
 EXPOSE 80
 
+EXPOSE 8080
+
 #добавим в контейнер конфигурационный файл php.ini, расположим его на стаднатрном для ubuntu месте
 ADD ./docker/conf/php/php.ini /etc/php/7.2/apache2/php.ini
 
