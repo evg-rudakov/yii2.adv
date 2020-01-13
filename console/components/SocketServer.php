@@ -8,6 +8,7 @@
 
 namespace console\components;
 
+use frontend\models\ChatLog;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
@@ -23,27 +24,60 @@ class SocketServer implements MessageComponentInterface
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
-        $this->echoToClient($conn);
+        $this->sendHelloMessage($conn);
         echo "New connection! ({$conn->resourceId})\n";
     }
 
+    /**
+     * @param ConnectionInterface $from
+     * @param string $msg
+     */
     public function onMessage(ConnectionInterface $from, $msg)
     {
-        $numRecv = count($this->clients) - 1;
         var_dump($msg);
-        var_dump($this->clients);
-        echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
-            , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
-        foreach ($this->clients as $client) {
-            // The sender is not the receiver, send to each client connected
-            $client->send($msg);
+        $msgArray = json_decode($msg, true);
+
+        ChatLog::create($msgArray);
+
+        if ($msgArray['type'] === ChatLog::SHOW_HISTORY) {
+            $this->showHistory($from);
+        } else {
+            foreach ($this->clients as $client) {
+                $client->send($msg);
+            }
+        }
+
+    }
+
+
+    private function showHistory(ConnectionInterface $conn)
+    {
+        $chatLogsQuery = ChatLog::find()->orderBy('created_at ASC');
+
+        foreach ($chatLogsQuery->each() as $chatLog) {
+            /**
+             * @var ChatLog $chatLog
+             */
+            $this->sendMessage($conn, ['message'=>$chatLog->message, 'username'=>$chatLog->username]);
         }
     }
 
-    private function echoToClient(ConnectionInterface $conn)
+    /**
+     * @param ConnectionInterface $conn
+     * @param array $msg
+     */
+    private function sendMessage(ConnectionInterface $conn, array $msg)
     {
-        //data - дернуть из монго
-        $conn->send(json_encode(['message' => 'Всем привет', 'username' => 'Чат студентов geekbrains.ru']));
+        $conn->send(json_encode($msg));
+    }
+
+    /**
+     * @param ConnectionInterface $conn
+     */
+    private function sendHelloMessage(ConnectionInterface $conn)
+    {
+
+        $this->sendMessage($conn,['message' => 'Всем привет', 'username' => 'Чат студентов geekbrains.ru']);
     }
 
     public function onClose(ConnectionInterface $conn)

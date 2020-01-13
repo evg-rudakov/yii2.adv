@@ -18,7 +18,7 @@ use console\components\SocketServer;
 class SocketController extends Controller
 {
 
-    public function actionStartSocket($port = 8080)
+    public function actionStart($port = 8080)
     {
         $server = IoServer::factory(
             new HttpServer(
