@@ -25,7 +25,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
-    - 9514:3306
+    - 9515:3306
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: yii2advanced
