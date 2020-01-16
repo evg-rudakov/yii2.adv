@@ -20,11 +20,9 @@ $this->title = 'My Yii Application';
             <div class="col-lg-4">
                 <h2>Heading</h2>
 
-                <?php \yii\widgets\Pjax::begin(); ?>
-                <?= \yii\helpers\Html::a("Показать дату", ['site/date'], ['class' => 'btn btn-lg btn-success']) ?>
-                <?= \yii\helpers\Html::a("Показать время", ['site/time'], ['class' => 'btn btn-lg btn-primary']) ?>
-                <h1>Сейчас: <?= $response ?></h1>
-                <?php \yii\widgets\Pjax::end(); ?>
+                <?= \yii\helpers\Html::a("Показать дату", 'js:', ['class' => 'btn btn-lg btn-primary js-set-data']) ?>
+                <?= \yii\helpers\Html::a("Показать время", 'js:', ['class' => 'btn btn-lg btn-success js-get-time']) ?>
+                <h1 class="js-set-data">Сейчас: <?= $response ?></h1>
             </div>
             <div class="col-lg-4">
                 <h2>Heading</h2>
@@ -50,3 +48,20 @@ $this->title = 'My Yii Application';
 
     </div>
 </div>
+<?php
+$js = <<<JS
+    $(document).on('.js-get-time','click', function () {
+        debugger;
+        $.ajax({
+            url:'/site/time'
+        }).success(function (data) {
+            console.log(data);
+            $('.js-set-data').html(data.time)
+        })
+    });
+JS;
+
+$this->registerJs($js, yii\web\View::POS_LOAD);
+
+?>
+

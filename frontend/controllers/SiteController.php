@@ -74,7 +74,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index',['response' => date('H:i:s')]);
+        return $this->render('index', ['response' => date('H:i:s')]);
     }
 
     /**
@@ -260,8 +260,8 @@ class SiteController extends Controller
 
     public function actionTime()
     {
-
-        return $this->render('index', ['response' => date('H:i:s')]);
+        Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
+        return ['time'=> date('h:i:s')];
     }
 
     public function actionDate()

@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\search\TaskSearch */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="task-search">

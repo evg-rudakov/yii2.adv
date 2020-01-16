@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use common\models\Task;
 use frontend\models\search\TaskSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -70,8 +71,12 @@ class TaskController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $templates = Task::find()->where(['is_template'=>true])->all();
+        $templates = ArrayHelper::map($templates, 'id', 'title');
+
         return $this->render('create', [
             'model' => $model,
+            'templates'=>$templates
         ]);
     }
 
