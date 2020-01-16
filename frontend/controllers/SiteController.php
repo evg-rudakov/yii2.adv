@@ -74,7 +74,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index',['response' => date('H:i:s')]);
     }
 
     /**
@@ -256,5 +256,16 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function actionTime()
+    {
+
+        return $this->render('index', ['response' => date('H:i:s')]);
+    }
+
+    public function actionDate()
+    {
+        return $this->render('index', ['response' => date('d.m.Y')]);
     }
 }
