@@ -34,9 +34,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'executor_id',
             'title',
             'description:ntext',
-            'priority',
-            'status',
-            'created_at',
+            'priority.title',
+            [
+                'attribute'=>'status',
+                'value'=>function(\common\models\Task $model) {
+                    return \common\models\Task::getStatusName()[$model->status];
+                }
+            ],
+            'created_at:datetime',
+            'updated_at:datetime',
+            'is_template:boolean'
         ],
     ]) ?>
 
