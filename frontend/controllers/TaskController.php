@@ -97,6 +97,8 @@ class TaskController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'templates'=>[]
+
         ]);
     }
 
@@ -123,6 +125,7 @@ class TaskController extends Controller
      */
     protected function findModel($id)
     {
+//        if (($model = Task::findOne(['id'=>$id, 'author_id'=>Yii::$app->user->identity->id])) !== null) {
         if (($model = Task::findOne($id)) !== null) {
             return $model;
         }
