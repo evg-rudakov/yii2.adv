@@ -92,7 +92,15 @@ class ChatLog extends \yii\db\ActiveRecord
     public static function create(array $data)
     {
         try {
-            $model = new self(['username' => $data['username'], 'message' => $data['message'], 'type' => $data['type']]);
+
+            $model = new self([
+                'username' => $data['username'],
+                'message' => $data['message'],
+                'type' => $data['type'],
+                'task_id' => $data['task_id'] ?? null,
+                'project_id' => $data['project_id'] ?? null
+            ]);
+
             if ($model->save()) {
                 return true;
             } else {

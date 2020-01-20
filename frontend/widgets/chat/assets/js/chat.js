@@ -9,7 +9,7 @@ chat.onmessage = function (e) {
     $('#response').text('');
     console.log(e);
     let response = JSON.parse(e.data);
-    $('.js-messages-content').append('<div><b>' + response.username + '</b>: ' + response.message + '</div>');
+    $('.js-messages-content').append('<div>'+response.created_at+' <b>' + response.username + '</b>: ' + response.message + '</div>');
 };
 
 chat.onopen = function (e) {
@@ -28,7 +28,9 @@ $('#send').click(function () {
     chat.send(JSON.stringify({
             'username': username,
             'message': $('#message').val(),
-            'type': SEND_MESSAGE
+            'type': SEND_MESSAGE,
+            'task_id':task_id,
+            'project_id': project_id
         })
     );
     $('#message').val('');
