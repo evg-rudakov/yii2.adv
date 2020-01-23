@@ -14,6 +14,9 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
+            'parsers' => [
+                'application/json' => \yii\web\JsonParser::class,
+            ]
         ],
         'user' => [
             'identityClass' => \common\models\User::class,
@@ -40,7 +43,30 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'controller' => 'api/task',
+                    'class' => \yii\rest\UrlRule::class,
+                    'extraPatterns' => [
+                        //'METHOD action' => 'actionFunction',
+                        'POST random/<count>' => 'random',
+                        'GET data-provider/<limit>' => 'data-provider',
+                        'GET auth' => 'auth',
+                    ],
+                ],
+
+                [
+                    'controller' => 'api/user',
+                    'class' => \yii\rest\UrlRule::class,
+                    'extraPatterns' => [
+                    ],
+                ],
             ],
+
+        ],
+    ],
+    'modules' => [
+        'api' => [
+            'class' => \frontend\modules\api\Module::class
         ],
     ],
     'params' => $params,
