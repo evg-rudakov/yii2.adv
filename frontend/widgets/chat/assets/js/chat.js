@@ -14,6 +14,7 @@ chat.onmessage = function (e) {
 
 chat.onopen = function (e) {
     console.log("Connection established!");
+    //отправить сообщение с task_id и project_id - в какой набор пользователя подключить + user_id
     chat.send(JSON.stringify({
             'username': username,
             'type': SHOW_HISTORY,
