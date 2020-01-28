@@ -228,11 +228,14 @@ class User extends ActiveRecord implements IdentityInterface
         if (Yii::$app->request->isPost) {
             $this->generateAuthKey();
             $this->generateEmailVerificationToken();
-            if (empty(Yii::$app->request->post('password'))){
-                $this->setPassword(Yii::$app->security->generatePasswordHash(6));
-            } else {
-                $this->setPassword(Yii::$app->request->post('password'));
+            if (!$this->password_hash) {
+                if (empty(Yii::$app->request->post('password'))) {
+                    $this->setPassword(Yii::$app->security->generatePasswordHash(6));
+                } else {
+                    $this->setPassword(Yii::$app->request->post('password'));
+                }
             }
+
         }
         return parent::beforeSave($insert);
     }

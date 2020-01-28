@@ -1,18 +1,21 @@
 <?php
-$config =  [
+$config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-    ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+    ]
 ];
 
-if (false) {
+if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [

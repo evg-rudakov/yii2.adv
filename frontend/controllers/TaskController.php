@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\TaskSubscriber;
 use Yii;
 use common\models\Task;
 use frontend\models\search\TaskSearch;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -21,8 +23,18 @@ class TaskController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['view', 'create', 'update', 'delete', 'index', 'subscribe', 'unsubscribe'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -53,8 +65,11 @@ class TaskController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $isSubscribed = TaskSubscriber::isSubscribed(\Yii::$app->user->id, $id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'isSubscribed' => $isSubscribed,
         ]);
     }
 
@@ -71,12 +86,12 @@ class TaskController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $templates = Task::find()->where(['is_template'=>true])->all();
+        $templates = Task::find()->where(['is_template' => true])->all();
         $templates = ArrayHelper::map($templates, 'id', 'title');
 
         return $this->render('create', [
             'model' => $model,
-            'templates'=>$templates
+            'templates' => $templates
         ]);
     }
 
@@ -97,7 +112,7 @@ class TaskController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'templates'=>[]
+            'templates' => []
 
         ]);
     }
@@ -131,5 +146,26 @@ class TaskController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    public function actionSubscribe($id)
+    {
+        if (TaskSubscriber::subscribe(\Yii::$app->user->id, $id)) {
+            Yii::$app->session->setFlash('success', 'Subscribed');
+        } else {
+            Yii::$app->session->setFlash('error', 'Error');
+        }
+        $this->redirect(['task/view', 'id' => $id]);
+    }
+
+    public function actionUnsubscribe($id)
+    {
+        if (TaskSubscriber::unsubscribe(\Yii::$app->user->id, $id)) {
+            Yii::$app->session->setFlash('success', 'Subscribed');
+        } else {
+            Yii::$app->session->setFlash('error', 'Error');
+        }
+        $this->redirect(['task/view', 'id' => $id]);
     }
 }
