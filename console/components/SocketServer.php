@@ -16,6 +16,8 @@ class SocketServer implements MessageComponentInterface
 {
     protected $clients;
 
+    protected $taskClients = [];
+
     public function __construct()
     {
         $this->clients = new \SplObjectStorage; // Для хранения технической информации об присоединившихся клиентах используется технология SplObjectStorage, встроенная в PHP
@@ -24,6 +26,7 @@ class SocketServer implements MessageComponentInterface
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
+        //$conn подбрасываем в набор
         $this->sendHelloMessage($conn);
         echo "New connection! ({$conn->resourceId})\n";
     }
@@ -31,6 +34,7 @@ class SocketServer implements MessageComponentInterface
     /**
      * @param ConnectionInterface $from
      * @param string $msg
+     * @throws \yii\base\InvalidConfigException
      */
     public function onMessage(ConnectionInterface $from, $msg)
     {
